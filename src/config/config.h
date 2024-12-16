@@ -104,7 +104,7 @@ public:
     static const property_name LOG_LEVEL;
 
     /// Property name: metrics server: quantity of metrics server threads
-    static const property_name METRICS_SERVER_CONCURRENCY_THREADS_QUANTITY;
+    static const property_name HTTP_SERVER_CONCURRENCY_THREADS_QUANTITY;
 
     /// Property name: metrics server: HTTP identification string
     static const property_name METRICS_SERVER_IDENTIFICATION;

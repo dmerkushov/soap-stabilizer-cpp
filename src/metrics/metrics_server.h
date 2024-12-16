@@ -47,7 +47,7 @@ private:
     metrics_server();
 
     /// Boost.ASIO I/O Context for the metrics server
-    boost::asio::io_context _ioc {config::instance().get_config_property_value<uint16_t>(config::METRICS_SERVER_CONCURRENCY_THREADS_QUANTITY)};
+    boost::asio::io_context _ioc {config::instance().get_config_property_value<uint16_t>(config::HTTP_SERVER_CONCURRENCY_THREADS_QUANTITY)};
 };
 
 /// Single HTTP connection processing the request for metrics
@@ -101,7 +101,7 @@ private:
     prometheus_metrics_formatter _prometheus;
 };
 
-} // namespace intbusbot
+} // namespace soapstab
 
 namespace fmt {
 template<>

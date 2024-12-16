@@ -11,7 +11,7 @@ using namespace soapstab;
 
 const string config::HTTP_LISTEN_PORT = "HTTP_LISTEN_PORT";
 const string config::LOG_LEVEL = "LOG_LEVEL";
-const string config::METRICS_SERVER_CONCURRENCY_THREADS_QUANTITY = "METRICS_SERVER_CONCURRENCY_THREADS_QUANTITY";
+const string config::HTTP_SERVER_CONCURRENCY_THREADS_QUANTITY = "HTTP_SERVER_CONCURRENCY_THREADS_QUANTITY";
 const string config::METRICS_SERVER_BUFFER_SIZE_BYTES = "METRICS_SERVER_BUFFER_SIZE_BYTES";
 const string config::METRICS_SERVER_LISTEN_IPADDRESS = "METRICS_SERVER_LISTEN_IPADDRESS";
 const string config::METRICS_SERVER_LISTEN_PORT = "METRICS_SERVER_LISTEN_PORT";
@@ -63,7 +63,7 @@ config::config() {
 
     add_config_property<uint16_t>(HTTP_LISTEN_PORT, 8080);
     add_config_property<log::level::level_enum>(LOG_LEVEL, log::level::debug, false, true, "Global logging level");
-    add_config_property<uint16_t>(METRICS_SERVER_CONCURRENCY_THREADS_QUANTITY, 1);
+    add_config_property<uint16_t>(HTTP_SERVER_CONCURRENCY_THREADS_QUANTITY, 1);
     add_config_property<string>(METRICS_SERVER_IDENTIFICATION, "IntbusBot Metrics HTTP Server");
     add_config_property<int32_t>(METRICS_SERVER_RESPONSE_TIMEOUT_MILLIS, 5000);
     add_config_property<int64_t>(METRICS_SERVER_BUFFER_SIZE_BYTES, 8192);
