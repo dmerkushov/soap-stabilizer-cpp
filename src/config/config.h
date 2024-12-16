@@ -71,11 +71,22 @@ public:
      **************************************************************************
      */
 
+    /// Property type: String
     static const std::string PROP_TYPE_STR;
+
+    /// Property type: unsigned integer, 16-bit
     static const std::string PROP_TYPE_UINT16;
+
+    /// Property type: signed integer, 32-bit
     static const std::string PROP_TYPE_INT32;
+
+    /// Property type: signed integer, 64-bit
     static const std::string PROP_TYPE_INT64;
+
+    /// Property type: boolean
     static const std::string PROP_TYPE_BOOL;
+
+    /// Property type: log level
     static const std::string PROP_TYPE_LOGLEV;
 
     /*
@@ -294,6 +305,8 @@ public:
 
     /**
      * @brief Add a property listener for a given property
+     *
+     * Property listener is a function that will be executed upon property change
      * @param name The property name
      * @param listener The listener
      * @see property_name
