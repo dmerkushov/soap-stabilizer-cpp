@@ -29,12 +29,12 @@ class http_request_executor {
 enum http_security_type {
     /// HTTP security type
     HTTP,
-    
+
     /// HTTPS is not yet supported
     HTTPS
 };
 
-class http_port_security {
+class http_port_configuration {
 public:
     /// Security type: HTTP or HTTPS
     http_security_type security_type;
@@ -51,17 +51,17 @@ public:
     /**
      * Set a TCP port for the HTTP server to listen
      * @param port the port
-     * @param port_security Security policy for the port. NB: right now, HTTPS is not supported
+     * @param port_configuration Configuration for the port. NB: right now, HTTPS is not supported
      * @param request_executor The HTTP request executor for the port
      */
-    void set_request_executor(uint16_t port, http_port_security port_security, http_request_executor &&request_executor);
+    void set_request_executor(uint16_t port, http_port_configuration port_configuration, http_request_executor &&request_executor);
 
     /**
      * Get the HTTP security policy for an HTTP port
      * @param port
      * @return If the port configuration is found, its security policy is returned. If the port configuration is not found, an empty std::optional is returned
      */
-    std::optional<http_port_security> get_port_security(uint16_t port);
+    std::optional<http_port_configuration> get_port_configuration(uint16_t port);
 
     void remove_executor(uint16_t port);
 
@@ -91,9 +91,27 @@ private:
     std::map<uint16_t, http_request_executor &&> executors;
 
     /// Per-port security policies
-    std::map<uint16_t, http_port_security> port_securities;
+    std::map<uint16_t, http_port_configuration> port_securities;
 };
 
 } // namespace soapstab
+
+namespace fmt {
+
+template<>
+struct formatter<soapstab::http_port_configuration> {
+    template<typename ParseContext>
+    constexpr auto parse(ParseContext &ctx) {
+        return std::begin(ctx);
+    }
+
+    template<typename FormatContext>
+    auto format(const soapstab::http_port_configuration &http_port_security_value, FormatContext &ctx) {
+        return fmt::format_to(ctx.out(), "http_port_configuration[security_type={}]", http_port_security_value.security_type);
+    }
+};
+
+//
+} // namespace fmt
 
 #endif // SOAP_STABILIZER_CPP_HTTP_SERVER_H
