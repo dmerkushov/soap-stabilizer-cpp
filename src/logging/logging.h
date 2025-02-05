@@ -43,6 +43,23 @@ struct formatter<std::optional<T>> {
         }
     }
 };
+
+template<typename T>
+struct formatter<std::shared_ptr<T>> {
+    template<typename ParseContext>
+    constexpr auto parse(ParseContext &ctx) {
+        return std::begin(ctx);
+    }
+
+    template<typename FormatContext>
+    auto format(const std::shared_ptr<T> &ptr, FormatContext &ctx) {
+        if(ptr.has_value()) {
+            return fmt::format_to(ctx.out(), "shared_ptr[{}]", ptr.value());
+        } else {
+            return fmt::format_to(ctx.out(), "shared_ptr[empty]");
+        }
+    }
+};
 } // namespace fmt
 
 #endif // SOAPSTAB_LOGGING_H
