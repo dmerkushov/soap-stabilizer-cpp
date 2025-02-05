@@ -18,12 +18,13 @@
 #include <boost/optional.hpp>
 #include <chrono>
 #include <memory>
+#include <mutex>
 #include <optional>
 
 namespace soapstab {
 
 class http_request_executor {
-    virtual std::shared_ptr<http_result> operator()(std::shared_ptr<http_request>) = 0;
+    virtual std::shared_ptr<http_result> operator()(std::shared_ptr<http_request>);
 };
 
 enum http_security_type {
@@ -42,19 +43,23 @@ public:
 
 class http_server : public std::enable_shared_from_this<http_server> {
 public:
-    /// (Re)start listening for HTTP requests
+    /// Start or resume listening for HTTP requests
     void start_listening();
 
     /// Stop listening for HTTP requests
     void stop_listening();
 
+    void restart_listening();
+
     /**
-     * Set a TCP port for the HTTP server to listen
+     * Set a TCP port for the HTTP server to listen with an executor to process requests on this port. The old configuration associated with the port (if any) is deleted.
+     *
+     * This can only be done when the server is not listening
      * @param port the port
      * @param port_configuration Configuration for the port. NB: right now, HTTPS is not supported
      * @param request_executor The HTTP request executor for the port
      */
-    void set_request_executor(uint16_t port, http_port_configuration port_configuration, http_request_executor &&request_executor);
+    void set_port(uint16_t port, http_port_configuration port_configuration, http_request_executor &&request_executor);
 
     /**
      * Get the HTTP security policy for an HTTP port
@@ -63,7 +68,13 @@ public:
      */
     std::optional<http_port_configuration> get_port_configuration(uint16_t port);
 
-    void remove_executor(uint16_t port);
+    /**
+     * Remove a TCP port with its executor from the listening configuration.
+     *
+     * This can only be done when the server is not listening
+     * @param port
+     */
+    void remove_port(uint16_t port);
 
     /*
      **************************************************************************
@@ -81,17 +92,19 @@ public:
     }
 
 private:
+    std::mutex _mutex;
+
     /// Create an instance of the HTTP server
     http_server();
 
     /// Boost.ASIO I/O Context for the HTTP server
     boost::asio::io_context _ioc {config::instance().get_config_property_value<uint16_t>(config::HTTP_SERVER_CONCURRENCY_THREADS_QUANTITY)};
 
-    /// Instances of the HTTP request executors per port
-    std::map<uint16_t, http_request_executor &&> executors;
+    /// Instances of the HTTP request request_executors per port
+    std::map<uint16_t, http_request_executor> request_executors;
 
-    /// Per-port security policies
-    std::map<uint16_t, http_port_configuration> port_securities;
+    /// Per-port configurations (security policies, etc)
+    std::map<uint16_t, http_port_configuration> port_configurations;
 };
 
 } // namespace soapstab
